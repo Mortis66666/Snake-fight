@@ -21,6 +21,7 @@ BLACK = (0, 0, 0)
 RED = (233, 0, 0)
 GREEN = (0, 233, 0)
 BLUE = (0, 0, 233)
+PURPLE = (233, 0, 233)
 
 
 greencrash = pygame.USEREVENT + 1
@@ -32,21 +33,32 @@ class direction(enum.Enum):
     UP = 3
     DOWN = 4
 
+class species(enum.Enum):
+    NORMAL = 1
+    MAGIC = 2
+
 @dataclass
 class Food:
     x = width//2
     y = height//2
+    type = species.NORMAL
 
     def blit(self):
-        pygame.draw.circle(win, RED, (self.x, self.y), 10)
+        pygame.draw.circle(win, (RED if self.type == species.NORMAL else PURPLE), (self.x, self.y), 10)
 
     def ate(self):
         self.x = random.choice(list(range(0, 601, 5)))
         self.y = random.choice(list(range(0, 601, 5)))
+        self.type = species(bool(random.randint(0, 10))+1)
 
     def reset(self):
         self.x = width//2
         self.y = height//2
+        self.type = species.NORMAL
+
+    @property
+    def value(self):
+        return 1 if self.type == species.NORMAL else 3
 
 @dataclass
 class SnakeBody:
@@ -95,7 +107,7 @@ class Snake:
     facing: direction
     body: list
     color: tuple
-    waiting = False
+    waiting = 0
 
 
     def blit(self):
@@ -119,7 +131,7 @@ class Snake:
 
         if self.waiting:
             self.body.append(SnakeBody(position[0], position[1], self.color))
-            self.waiting = False
+            self.waiting -= 1
 
         x, y = self.body[0].position
         
@@ -149,8 +161,8 @@ class Snake:
             return self.body[x]
 
     def eat(self, food: Food):
+        self.waiting += food.value
         food.ate()
-        self.waiting = True
 
     def colliderect(self, snake) -> bool:
         return self.body[0].position in map(lambda x:x.position, [x for x in snake.body])
