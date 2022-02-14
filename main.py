@@ -34,8 +34,8 @@ class direction(enum.Enum):
     DOWN = 4
 
 class species(enum.Enum):
-    NORMAL = 1
-    MAGIC = 2
+    NORMAL = 2
+    MAGIC = 1
 
 @dataclass
 class Food:
@@ -49,7 +49,7 @@ class Food:
     def ate(self):
         self.x = random.choice(list(range(0, 601, 5)))
         self.y = random.choice(list(range(0, 601, 5)))
-        self.type = species(bool(random.randint(0, 10))+1)
+        self.type = species(bool(random.randint(0, 5))+1)
 
     def reset(self):
         self.x = width//2
@@ -143,6 +143,11 @@ class Snake:
                 pygame.event.post(pygame.event.Event(greencrash))
             else:
                 pygame.event.post(pygame.event.Event(bluecrash))
+        if self.colliderect(self, ignore_head = True):
+            if self.color == GREEN:
+                pygame.event.post(pygame.event.Event(greencrash))
+            else:
+                pygame.event.post(pygame.event.Event(bluecrash))
 
 
     def change_direction(self, direction: direction):
@@ -164,8 +169,8 @@ class Snake:
         self.waiting += food.value
         food.ate()
 
-    def colliderect(self, snake) -> bool:
-        return self.body[0].position in map(lambda x:x.position, [x for x in snake.body])
+    def colliderect(self, snake, ignore_head = False) -> bool:
+        return self.body[0].position in map(lambda x:x.position, [x for i, x in enumerate(snake.body) if i>0 or not ignore_head])
 
     def handle(self, key):
         if self.color == GREEN:
