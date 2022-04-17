@@ -58,7 +58,7 @@ class Food:
 
     @property
     def value(self):
-        return 1 if self.type == species.NORMAL else 3
+        return 3 if self.type == species.NORMAL else 9
 
 @dataclass
 class SnakeBody:
@@ -73,13 +73,13 @@ class SnakeBody:
     def move(self, direction: direction):
         match direction:
             case direction.RIGHT:
-                self.x += 5
+                self.x += 2
             case direction.LEFT:
-                self.x -= 5
+                self.x -= 2
             case direction.UP:
-                self.y -= 5
+                self.y -= 2
             case direction.DOWN:
-                self.y += 5
+                self.y += 2
 
         if self.x < 0:
             self.x += width
@@ -205,13 +205,13 @@ class Game:
     food = Food()
 
     green_snake = Snake(direction.RIGHT, [
-        SnakeBody(width//2 - 160, height//2, GREEN),
-        SnakeBody(width//2 - 165, height//2, GREEN)
+        SnakeBody(width//2 - (160 + i*2), height//2, GREEN)
+        for i in range(30)
         ], GREEN)
 
     blue_snake = Snake(direction.LEFT, [
-        SnakeBody(width//2 + 160, height//2, BLUE),
-        SnakeBody(width//2 + 165, height//2, BLUE)
+        SnakeBody(width//2 + (160 + i*2), height//2, BLUE)
+        for i in range(30)
         ], BLUE)
 
 
@@ -253,7 +253,6 @@ class Game:
         clock = pygame.time.Clock()
         fps = 60 # Frame per second
         crashed = []
-    
 
         while run:
             clock.tick(fps)
@@ -261,7 +260,6 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-                    pygame.quit()
                 elif event.type == pygame.KEYDOWN:
                     start = True
                     pressed = pygame.key.get_pressed()
@@ -285,22 +283,22 @@ class Game:
 
                 self.food.reset()
                 self.green_snake = Snake(direction.RIGHT, [
-                    SnakeBody(width//2 - 160, height//2, GREEN),
-                    SnakeBody(width//2 - 165, height//2, GREEN)
+                    SnakeBody(width//2 - (160 + i*2), height//2, GREEN)
+                    for i in range(30)
                     ], GREEN)
 
                 self.blue_snake = Snake(direction.LEFT, [
-                    SnakeBody(width//2 + 160, height//2, BLUE),
-                    SnakeBody(width//2 + 165, height//2, BLUE)
+                    SnakeBody(width//2 + (160 + i*2), height//2, BLUE)
+                    for i in range(30)
                     ], BLUE)
 
                 self.start()
 
+            if start:
+                self.move()
+            self.draw()
 
-            if run:
-                if start:
-                    self.move()
-                self.draw()
+        pygame.quit()
 
 
 if __name__ == "__main__":
