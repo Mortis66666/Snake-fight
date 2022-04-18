@@ -294,9 +294,10 @@ class Game:
 
                 self.start()
 
-            if start:
-                self.move()
-            self.draw()
+            if run:
+                if start:
+                    self.move()
+                self.draw()
 
         pygame.quit()
 
