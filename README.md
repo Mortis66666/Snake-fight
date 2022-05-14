@@ -1,2 +1,2 @@
 # Snake Fight
-## This is a two player game, each player control one snake, the one that control green snake use control `W`, `A`, `S` & `D` and the one that control blue snake use control `UP`, `LEFT`, `DOWN` & `RIGHT`
+This is a two player game, each player control one snake, the one that control green snake use control `W`, `A`, `S` & `D` and the one that control blue snake use control `UP`, `LEFT`, `DOWN` & `RIGHT`
